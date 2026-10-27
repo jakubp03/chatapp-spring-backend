@@ -4,7 +4,11 @@ A RESTful API backend for a real-time chat application built with Spring Boot. F
 
 ![Application Architecture](documentation/architecture_diagram.png)
 
-## 🚀 Technologies Used
+**Note**: This backend is designed to work with the corresponding React frontend. Both applications are orchestrated using Docker Compose for seamless development and deployment.
+
+- [Frontend Repository](https://github.com/jakubp03/chatapp-react-frontend)
+
+## Technologies Used
 
 - **Spring Boot 3.3.1** - Application framework
 - **Spring Security** - Authentication and authorization
@@ -16,7 +20,7 @@ A RESTful API backend for a real-time chat application built with Spring Boot. F
 - **Maven** - Dependency management
 - **H2** - In-memory testing database
 
-## 📋 Features
+## Features
 
 - **JWT-based authentication** with refresh tokens and token rotation
 - **Real-time messaging** via WebSocket/STOMP protocol
@@ -34,7 +38,7 @@ A RESTful API backend for a real-time chat application built with Spring Boot. F
 - **Notification system** for chat view events
 - **Security filters chain** for authentication and authorization
 
-## 🏗️ Project Structure
+## Project Structure
 
 ```
 src/main/java/com/chatapp/chatapp/
@@ -131,7 +135,7 @@ Configuration Files:
 └── application-dev.properties.example # Dev config template
 ```
 
-## 🛠️ Installation & Setup
+## Installation & Setup
 
 ### Prerequisites
 - Java 22
@@ -232,7 +236,7 @@ Configuration Files:
    mvn spring-boot:run
    ```
 
-## 🐋 Docker Setup (Recommended)
+## Docker Setup (Recommended)
 
 ### Development Environment
 ```bash
@@ -262,71 +266,8 @@ This will start:
 - Frontend App: `http://localhost:5173` (dev) or `http://localhost:3000` (prod)
 - Database: `localhost:3306`
 
-## 📊 Database Schema
 
-### Users Table
-```sql
-CREATE TABLE user (
-    uid VARCHAR(36) PRIMARY KEY,
-    name VARCHAR(255) UNIQUE,
-    password VARCHAR(255),
-    email VARCHAR(255) UNIQUE,
-    avatar_link VARCHAR(255)
-);
-```
-
-### User Sessions Table
-```sql
-CREATE TABLE user_session (
-    user_uid VARCHAR(36) PRIMARY KEY,
-    is_online BOOLEAN NOT NULL,
-    websocket_session_id VARCHAR(255),
-    last_seen DATETIME,
-    FOREIGN KEY (user_uid) REFERENCES user(uid)
-);
-```
-
-### Chat Views Table
-```sql
-CREATE TABLE chatview (
-    id VARCHAR(36) PRIMARY KEY,
-    name VARCHAR(255) NOT NULL
-);
-
-CREATE TABLE chatview_users (
-    chatview_id VARCHAR(36),
-    user_uid VARCHAR(36),
-    PRIMARY KEY (chatview_id, user_uid),
-    FOREIGN KEY (chatview_id) REFERENCES chatview(id),
-    FOREIGN KEY (user_uid) REFERENCES user(uid)
-);
-```
-
-### Messages Table
-```sql
-CREATE TABLE message (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    text TEXT NOT NULL,
-    user_uid VARCHAR(36),
-    chatview_id VARCHAR(36) NOT NULL,
-    created_at DATETIME(6) NOT NULL,
-    FOREIGN KEY (user_uid) REFERENCES user(uid),
-    FOREIGN KEY (chatview_id) REFERENCES chatview(id)
-);
-```
-
-### Tokens Table
-```sql
-CREATE TABLE token (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    token VARCHAR(512),
-    revoked BOOLEAN,
-    user_uid VARCHAR(36),
-    FOREIGN KEY (user_uid) REFERENCES user(uid)
-);
-```
-
-## 🔐 Authentication & Security
+## Authentication & Security
 
 ### JWT Configuration
 - **Access Token Expiration**: 1 hour (configurable)
@@ -349,7 +290,7 @@ CREATE TABLE token (
 5. Refresh token automatically sent via cookie to obtain new access tokens
 6. User logs out with [`POST /api/v1/auth/logout`](src/main/java/com/chatapp/chatapp/controller/AuthController.java) to revoke all tokens
 
-## 📡 API Endpoints
+## API Endpoints
 
 ### Authentication (`/api/v1/auth`)
 - `POST /api/v1/auth/authenticate` - User login with email and password
@@ -379,7 +320,7 @@ CREATE TABLE token (
 - **Subscribe to Messages**: `/user/queue/chatview/{chatViewId}`
 - **Subscribe to Notifications**: `/user/queue/notifications`
 
-## 🔌 WebSocket Configuration
+## WebSocket Configuration
 
 ### Connection & Message Flow
 1. **Client connects** to `/ws` endpoint with JWT token as query parameter
@@ -401,7 +342,7 @@ CREATE TABLE token (
 
 
 
-## ⚙️ Configuration
+## Configuration
 
 ### Hybrid Message Delivery Architecture
 The application implements a sophisticated hybrid message delivery system:
@@ -442,7 +383,7 @@ src/test/java/com/chatapp/chatapp/
     └── MockJwtService.java       # JWT mocking utility
 ```
 
-## 📊 Logging
+## Logging
 
 ### Logging Architecture
 The application uses a filter-based logging approach with MDC (Mapped Diagnostic Context)
@@ -474,7 +415,7 @@ All logging is configured via [`logback-spring.xml`](src/main/resources/logback-
 - Different log levels per package
 - Request/response tracking with correlation IDs
 
-## 🔧 Database Migrations
+## Database Migrations
 
 ### Flyway Migrations
 Located in [`src/main/resources/db/migration/`](src/main/resources/db/migration/):
@@ -482,7 +423,7 @@ Located in [`src/main/resources/db/migration/`](src/main/resources/db/migration/
 - `V2__Create_message_table.sql` - Message table
 - `V3__Create_token_table.sql` - Token table
 
-## 🚀 Deployment
+## Deployment
 
 ### Docker Deployment (Recommended)
 The application is fully containerized with production-ready Docker configurations:
@@ -504,7 +445,7 @@ docker-compose -f docker-compose.dev.yml up --build
 java -jar target/chatapp-0.0.1-SNAPSHOT.jar
 ```
 
-## 🛡️ Security Considerations
+## Security Considerations
 
 ### Implemented Security Features
 - Password hashing with BCrypt
@@ -516,7 +457,7 @@ java -jar target/chatapp-0.0.1-SNAPSHOT.jar
 - Database credentials are not hardcoded
 - JWT secret keys should be properly generated and secured in production
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
@@ -548,7 +489,7 @@ LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY=DEBUG
 LOGGING_LEVEL_COM_CHATAPP_CHATAPP=DEBUG
 ```
 
-## 📖 Code Documentation
+## Code Documentation
 
 ### Javadoc Documentation
 All Java classes, methods, and interfaces in this project are fully documented with comprehensive Javadoc comments.
@@ -564,7 +505,7 @@ open target/site/apidocs/index.html
 
 The generated Javadoc provides a complete API reference for all public classes and methods, making it easy for developers to understand and use the codebase.
 
-## 📚 Documentation
+## Documentation
 
 ### System Architecture & Diagrams
 
@@ -572,11 +513,7 @@ The generated Javadoc provides a complete API reference for all public classes a
 ![Authentication Sequence](documentation/login_seq_chatapp.png)
 *Step-by-step authentication process from login to token generation*
 
-#### Class Diagram
-![Class Diagram](documentation/class_diagram_chatapp.png)
-*Entity relationship and class structure showing the domain model*
-
-#### JWT Authentication Flow
+#### JWT Authentication Flow 
 ![JWT Authentication](documentation/authentication_seq_chatapp.png)
 *Detailed JWT token validation and authentication filter chain*
 
@@ -592,14 +529,10 @@ The generated Javadoc provides a complete API reference for all public classes a
 ![Use Case Diagram](documentation/chatapp_usecase.png)
 *User interactions and system capabilities overview*
 
-## 🔗 Related Projects
 
-- [Frontend Repository](https://github.com/jakubp03/chatapp-react-frontend) - React frontend application
-
-## 📄 License
+## License
 
 This project is licensed under the MIT License.
 
 ---
 
-**Note**: This backend is designed to work with the corresponding React frontend. Both applications are orchestrated using Docker Compose for seamless development and deployment.
