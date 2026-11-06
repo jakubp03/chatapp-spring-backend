@@ -15,6 +15,7 @@ A RESTful API backend for a real-time chat application built with Spring Boot. F
 - **Spring WebSocket** - Real-time messaging
 - **Spring Data JPA** - Database abstraction
 - **MySQL 8.0** - Primary database
+- **RabbitMQ 3.12** - Message queue for offline users
 - **JWT (JJWT)** - Token-based authentication
 - **Flyway** - Database migrations
 - **Maven** - Dependency management
